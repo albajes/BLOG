@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -10,7 +12,7 @@ class BlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'description', 'owner', 'owner_name', 'authors']
+        fields = ['id', 'title', 'description', 'owner', 'owner_name', 'authors', 'updated_at']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -35,7 +37,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'body', 'author', 'blog_data', 'is_published', 'likes', 'like_count', 'views', 'blog', 'tags']
+        fields = ['id', 'title', 'body', 'author', 'blog_data', 'is_published', 'likes', 'like_count', 'views', 'blog',
+                  'tags', 'created_at']
+        extra_kwargs = {
+            'views': {'read_only': True}, 'source': 'post.views'
+        }
 
 
 class CommentSerializer(serializers.ModelSerializer):
