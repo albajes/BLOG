@@ -95,6 +95,8 @@ class TagsViewSet(viewsets.ModelViewSet):
 
 
 class LikeViewSet(mixins.UpdateModelMixin, GenericViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_queryset(self):
         pass
 
@@ -165,4 +167,3 @@ class ChangePublish(mixins.UpdateModelMixin, GenericViewSet):
             return Response(serializer.data)
         else:
             return Response('You are not author of this post', status=status.HTTP_400_BAD_REQUEST)
-

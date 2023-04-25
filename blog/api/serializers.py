@@ -12,7 +12,7 @@ class BlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'description', 'owner', 'owner_name', 'authors', 'updated_at']
+        fields = ['id', 'title', 'description', 'owner', 'owner_name', 'authors', 'updated_at', 'readers']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,8 +45,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
     post_title = serializers.CharField(source='post.title', read_only=True)
-    author_name = serializers.CharField(source='author.username', read_only=True)
+    # author_name = serializers.CharField(source='author.username', read_only=True)
 
     class Meta:
         model = Comment
@@ -54,7 +55,6 @@ class CommentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'post': {'write_only': True},
             'post_title': {'read_only': True, 'source': 'post.title'},
-            'author': {'write_only': True},
             'author_name': {'read_only': True}
         }
 
