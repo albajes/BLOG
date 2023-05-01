@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -47,7 +45,6 @@ class PostSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     post_title = serializers.CharField(source='post.title', read_only=True)
-    # author_name = serializers.CharField(source='author.username', read_only=True)
 
     class Meta:
         model = Comment

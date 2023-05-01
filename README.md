@@ -62,6 +62,18 @@
 - фильтры блогов/постов: по дате (от - до отдельно друг от друга), по тегам
 - сортировка блогов/постов: название(в прямом/обратном порядке), дата (в прямом/обратном порядке), лайки(в прямом/обратном порядке), опционально по релевантности/актуальности
 
+
+## Описание проекта:
+Проект написан на языке Python с использованием библиотек: 
+- DRF (Django Rest Framework)
+- pcycorpg2
+- pytest
+
+с использованием базы данных: PostgreSQL 
+
+и добавлением Docker для более удобного запуска проекта.
+
+
 # API
 - #### Главная страница:  GET /posts/   |  список последних N постов со всех блогов
 > curl --location 'http://127.0.0.1:8000/posts'
@@ -159,3 +171,103 @@
        "owner_name": "albert",
        "authors": [],
        "updated_at": "2023-03-27T22:11:14.458079"  }
+
+
+## Поведение:
+#### 1. Счетчик просмотров увеличивается при открытии конкретного поста
+GET /posts/13/ 
+> curl --location 'http://127.0.0.1:8000/posts/13'
+
+#### 2. Поиск блогов/постов по их названию (title) и имени (username) автора
+GET /blogs?search=music
+> curl --location 'http://127.0.0.1:8000/blogs?search=music'
+
+GET /blogs?search=seconduser
+> curl --location 'http://127.0.0.1:8000/blogs?search=seconduser'
+
+GET /posts?search=albert
+>curl --location 'http://127.0.0.1:8000/posts?search=albert'
+
+GET /posts?search=shanson
+>curl --location 'http://127.0.0.1:8000/posts?search=shanson'
+
+#### 3. Фильтры блогов/постов по дате обновления (от-до) по тегам
+GET /blogs?updated_at_after=2023-04-01&updated_at_before=2023-04-10
+>curl --location 'http://127.0.0.1:8000/blogs/?updated_at_after=2023-04-01&updated_at_before=2023-04-10'
+
+GET /posts?created_at_after=2023-04-05&created_at_before=2023-04-20
+>curl --location 'http://127.0.0.1:8000/posts/?created_at_after=2023-04-05&created_at_before=2023-04-20'
+
+GET /posts?tags=4
+>curl --location 'http://127.0.0.1:8000/posts?tags=4'
+
+#### 4. Сортировка блогов/постов: название(в прямом/обратном порядке), дата (в прямом/обратном порядке), лайки(в прямом/обратном порядке), опционально по релевантности/актуальности
+GET /blogs/?ordering=title    | /blogs/?ordering=-title
+>curl --location 'http://127.0.0.1:8000/blogs/?ordering=title'
+
+>curl --location 'http://127.0.0.1:8000/blogs/?ordering=-title'
+
+GET /posts/?ordering=title    | /posts/?ordering=-title
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=title'
+
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=-title'
+
+GET /blogs/?ordering=updated_at    | /blogs/?ordering=-updated_at
+>curl --location 'http://127.0.0.1:8000/blogs/?ordering=updated_at'
+
+>curl --location 'http://127.0.0.1:8000/blogs/?ordering=-updated_at'
+
+GET /posts/?ordering=created_at    | /posts/?ordering=-created_at
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=created_at'
+
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=-created_at'
+
+GET /posts/?ordering=likes    | /posts/?ordering=-likes
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=likes'
+
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=-likes'
+
+GET /posts/?ordering=likes,views    | /posts/?ordering=-likes,views
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=likes,views'
+
+>curl --location 'http://127.0.0.1:8000/posts/?ordering=-likes,views'
+
+## Запуск проекта в терминале локальной машины:
+
+Для локального запуска проекта необходима существующая база данных.
+
+Настройка подключения к БД настраивается в файле `BLOG/blog/blog/settings.py` в переменной **DATABASES** 
+
+Для запуска проекта необходимо выполнить несколько комманд:
+
+1. pip install virtualenv
+2. virtualenv venv
+3. venv\bin\activate
+4. pip install django djangorestframework psycopg2
+5. pip install pytest-django
+6. cd blog
+7. python manage.py migrate
+8. python manage.py runserver
+
+
+## Запуск проекта в Docker-контейнере:
+
+Для запуска проекта в Docker-контейнере необходим установленный и запущенный **Docker** на локальной машине.
+
+Необходимо запустить терминал в директории BLOG/docker и выполнить команду:
+`docker-compose up --build`
+
+Подключиться к БД в контейнере Docker можно по следующим настройкам: 
+
+- 'NAME': 'postgres'
+- 'USER': 'postgres'
+- 'PASSWORD': 'postgres'
+- 'HOST': '127.0.0.1'
+- 'PORT': '15432'
+
+
+## Запуск unit-тестов:
+
+Для локального запуска Unit-тестов, необходимо в терминале выполнить следующую команду:
+
+- python manage.py test --verbosity 2

@@ -2,6 +2,10 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+import logging
+
+
+_logger = logging.getLogger(__name__)
 
 
 class Blog(models.Model):
@@ -14,6 +18,7 @@ class Blog(models.Model):
     readers = models.ManyToManyField(User, related_name='readers', verbose_name='Читатели', blank=True)
 
     def update_updated_at(self, *args, **kwargs):
+        _logger.debug('Begin refresh the time of updated_at blog')
         self.updated_at = datetime.datetime.now()
         super(Blog, self).save(*args, **kwargs)
 
@@ -43,6 +48,7 @@ class Post(models.Model):
     blog = models.ForeignKey(Blog, verbose_name='Блог', on_delete=models.CASCADE)
 
     def update_views(self, *args, **kwargs):
+        _logger.debug('Start increasing the view counter')
         self.views = self.views + 1
         super(Post, self).save(*args, **kwargs)
 
@@ -58,6 +64,7 @@ class Post(models.Model):
 
     @property
     def number_of_likes(self):
+        _logger.debug('Counting likes')
         return self.likes.count()
 
     class Meta:
