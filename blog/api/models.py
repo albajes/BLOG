@@ -17,13 +17,13 @@ class Blog(models.Model):
     authors = models.ManyToManyField(User, related_name='author_blog', verbose_name='Авторы', blank=True)
     readers = models.ManyToManyField(User, related_name='readers', verbose_name='Читатели', blank=True)
 
+    class Meta:
+        ordering = ['-updated_at']
+
     def update_updated_at(self, *args, **kwargs):
         _logger.debug('Begin refresh the time of updated_at blog')
         self.updated_at = datetime.datetime.now()
         super(Blog, self).save(*args, **kwargs)
-
-    class Meta:
-        ordering = ['-updated_at']
 
     def __str__(self):
         return self.title
@@ -47,6 +47,9 @@ class Post(models.Model):
     views = models.IntegerField(default=0)
     blog = models.ForeignKey(Blog, verbose_name='Блог', on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def update_views(self, *args, **kwargs):
         _logger.debug('Start increasing the view counter')
         self.views = self.views + 1
@@ -66,9 +69,6 @@ class Post(models.Model):
     def number_of_likes(self):
         _logger.debug('Counting likes')
         return self.likes.count()
-
-    class Meta:
-        ordering = ['-created_at']
 
     def __str__(self):
         return self.title

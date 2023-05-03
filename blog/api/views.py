@@ -4,32 +4,14 @@ from rest_framework import permissions, viewsets, mixins, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from django_filters import rest_framework as filters, ModelChoiceFilter
 
-from .permisisions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
 from .serializers import *
 import logging
+from filters import FilterBlog, FilterPost
 
 
 _logger = logging.getLogger(__name__)
-
-
-class FilterBlog(filters.FilterSet):
-    updated_at = filters.DateTimeFromToRangeFilter()
-
-    class Meta:
-        model = Blog
-        fields = ['updated_at']
-
-
-class FilterPost(filters.FilterSet):
-    created_at = filters.DateTimeFromToRangeFilter()
-    tags = ModelChoiceFilter(queryset=Tags.objects.all())
-    blog = ModelChoiceFilter(queryset=Blog.objects.all())
-
-    class Meta:
-        model = Post
-        fields = ['created_at', 'tags', 'blog']
 
 
 class UserViewSet(viewsets.ModelViewSet):
