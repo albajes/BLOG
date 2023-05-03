@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .models import *
+from blog.api.models import *
 
 
 class BlogModelTest(TestCase):
